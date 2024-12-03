@@ -7,7 +7,7 @@ from discord import app_commands
 
 import breadcord
 from breadcord.helpers import HTTPModuleCog
-from discord.ext import commands, tasks
+from discord.ext import tasks
 import aiohttp
 from yarl import URL
 
@@ -30,6 +30,9 @@ class DailyMusic(HTTPModuleCog):
     def __init__(self, module_id: str) -> None:
         super().__init__(module_id)
         self.webhook = discord.Webhook.from_url(cast(str, self.settings.webhook_url.value), client=self.bot)
+        @cast(breadcord.config.Setting, self.settings.webhook_url).observe
+        def on_webhook_change(_, new: str) -> None:
+            self.webhook = discord.Webhook.from_url(new, client=self.bot)
 
         self.url_base = URL("http://ws.audioscrobbler.com/2.0/")
         self.db = sqlite3.connect(self.storage_path / 'daily_music.db')
