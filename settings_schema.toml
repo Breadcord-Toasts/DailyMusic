@@ -1,0 +1,2 @@
+# THe webhook URL to use hwen sending daily most listened to tracks
+webhook_url = ""
